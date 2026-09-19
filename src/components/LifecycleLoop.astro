@@ -1,0 +1,102 @@
+---
+import { pillars } from "../lib/site";
+
+const cx = 320, cy = 290, r = 185, nodeR = 28, labelR = 232;
+const rad = (d: number) => (d * Math.PI) / 180;
+const pt = (deg: number, rr = r) => [cx + rr * Math.cos(rad(deg)), cy + rr * Math.sin(rad(deg))];
+const f = (n: number) => n.toFixed(2);
+
+const nodes = pillars.map((p, i) => {
+  const deg = -90 + i * 72;
+  const [x, y] = pt(deg);
+  const [lx, ly] = pt(deg, labelR);
+  const c = Math.cos(rad(deg));
+  const anchor = Math.abs(c) < 0.2 ? "middle" : c > 0 ? "start" : "end";
+  return { ...p, deg, x, y, lx, ly, anchor };
+});
+
+const gap = 11;
+const arcs = nodes.map((node, i) => {
+  const from = node.deg + gap;
+  const to = node.deg + 72 - gap;
+  const [x1, y1] = pt(from);
+  const [x2, y2] = pt(to);
+  // arrowhead at end, oriented along the clockwise tangent
+  const t = rad(to + 90);
+  const tip = [x2 + Math.cos(t) * 6, y2 + Math.sin(t) * 6];
+  const nx = Math.cos(rad(to)), ny = Math.sin(rad(to));
+  const base = [x2 - Math.cos(t) * 8, y2 - Math.sin(t) * 8];
+  const a = [base[0] + nx * 7, base[1] + ny * 7];
+  const b = [base[0] - nx * 7, base[1] - ny * 7];
+  return {
+    d: `M ${f(x1)} ${f(y1)} A ${r} ${r} 0 0 1 ${f(x2)} ${f(y2)}`,
+    head: `${f(tip[0])},${f(tip[1])} ${f(a[0])},${f(a[1])} ${f(b[0])},${f(b[1])}`,
+    i,
+  };
+});
+---
+<figure class="loop" data-loop>
+  <svg viewBox="0 0 640 580" role="img" aria-label="The data lifecycle: collection, systems, visualization, workflow and automation, insights, looping back to collection">
+    <circle cx={cx} cy={cy} r={r} class="guide" />
+    {arcs.map((a) => (
+      <g style={`--i:${a.i}`}>
+        <path d={a.d} class="arc" pathLength="1" />
+        <polygon points={a.head} class="head" />
+      </g>
+    ))}
+    {nodes.map((n, i) => (
+      <g style={`--i:${i}`} class="node">
+        <circle cx={n.x} cy={n.y} r={nodeR} class="disc" />
+        <text x={n.x} y={n.y} class="n" text-anchor="middle" dominant-baseline="central">{n.n}</text>
+        <text x={n.lx} y={n.ly} class="lbl" text-anchor={n.anchor} dominant-baseline="central">{n.title}</text>
+      </g>
+    ))}
+    <text x={cx} y={cy - 6} class="core" text-anchor="middle">Data</text>
+    <text x={cx} y={cy + 20} class="core-sub" text-anchor="middle">lifecycle</text>
+  </svg>
+</figure>
+<style>
+  .loop { margin: 0; }
+  svg { width: 100%; height: auto; overflow: visible; }
+  .guide { fill: none; stroke: var(--line-on-ink); stroke-width: 1; stroke-dasharray: 2 6; }
+  .arc { fill: none; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; }
+  .head { fill: var(--gold); }
+  .disc { fill: var(--ink); stroke: var(--gold); stroke-width: 1.5; }
+  .n { fill: var(--gold-bright); font-family: var(--serif); font-size: 19px; }
+  .lbl { fill: var(--white); font-family: var(--sans); font-size: 16px; font-weight: 500; }
+  .core { fill: var(--white); font-family: var(--serif); font-size: 34px; }
+  .core-sub { fill: var(--stone-on-ink); font-family: var(--sans); font-size: 14px; }
+
+  :global(html.js) .loop:not(.in) .arc { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  :global(html.js) .loop:not(.in) .head,
+  :global(html.js) .loop:not(.in) .node { opacity: 0; }
+  .loop.in .arc { stroke-dasharray: 1; animation: draw 0.8s ease forwards; animation-delay: calc(var(--i) * 0.75s + 0.3s); stroke-dashoffset: 1; }
+  .loop.in .head, .loop.in .node { animation: appear 0.4s ease forwards; opacity: 0; }
+  .loop.in .head { animation-delay: calc(var(--i) * 0.75s + 1s); }
+  .loop.in .node { animation-delay: calc(var(--i) * 0.75s); }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes appear { to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .loop:not(.in) .arc { stroke-dasharray: none; stroke-dashoffset: 0; }
+    :global(html.js) .loop:not(.in) .head, :global(html.js) .loop:not(.in) .node { opacity: 1; }
+    .loop.in .arc, .loop.in .head, .loop.in .node { animation: none; opacity: 1; stroke-dashoffset: 0; }
+  }
+</style>
+<script>
+  const el = document.querySelector<HTMLElement>("[data-loop]");
+  if (el) {
+    if (!("IntersectionObserver" in window)) el.classList.add("in");
+    else {
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            el.classList.add("in");
+            io.disconnect();
+          }
+        },
+        { threshold: 0.35 }
+      );
+      io.observe(el);
+    }
+  }
+</script>

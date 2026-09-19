@@ -1,0 +1,50 @@
+---
+import { site } from "../lib/site";
+interface Props { services: string[] }
+const { services } = Astro.props;
+---
+<form id="contact-form" class="form" data-email={site.contact.email}>
+  <label>Name<input name="name" required autocomplete="name" /></label>
+  <label>Email<input name="email" type="email" required autocomplete="email" /></label>
+  <label>Phone<input name="phone" type="tel" autocomplete="tel" /></label>
+  <label>Service
+    <select name="service">
+      <option value="">Not sure yet</option>
+      {services.map((s) => <option value={s}>{s}</option>)}
+    </select>
+  </label>
+  <label class="full">Message<textarea name="message" rows="5" required></textarea></label>
+  <div class="full actions">
+    <button class="btn" type="submit">Send message</button>
+    <p class="note" id="form-note" role="status">This opens your email app with the message ready to send.</p>
+  </div>
+</form>
+<style>
+  .form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  label { display: grid; gap: 6px; font-size: 0.9375rem; font-weight: 500; }
+  .full { grid-column: 1 / -1; }
+  input, select, textarea { font: inherit; font-weight: 400; padding: 12px 14px; border: 1px solid var(--line); background: var(--white); color: var(--ink); border-radius: 0; transition: border-color 0.15s; }
+  input:hover, select:hover, textarea:hover { border-color: var(--stone); }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); }
+  .actions { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .note { font-size: 0.875rem; color: var(--stone); }
+  @media (max-width: 640px) { .form { grid-template-columns: 1fr; } }
+</style>
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const d = new FormData(form);
+    const get = (k: string) => String(d.get(k) ?? "").trim();
+    const subject = `Website enquiry${get("service") ? ": " + get("service") : ""}`;
+    const body = [
+      `Name: ${get("name")}`,
+      `Email: ${get("email")}`,
+      `Phone: ${get("phone")}`,
+      `Service: ${get("service") || "Not sure yet"}`,
+      "",
+      get("message"),
+    ].join("\n");
+    window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+</script>

@@ -1,0 +1,118 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import WhyUsCard from "../components/WhyUsCard.astro";
+import CTABand from "../components/CTABand.astro";
+import { existsSync } from "node:fs";
+
+const industries = [
+  { title: "Logistics", body: "Tracking, dispatch, and reporting systems that keep shipments and operations visible." },
+  { title: "Healthcare", body: "Patient-facing websites and records systems that help clinics reach people and manage information." },
+  { title: "Retail", body: "Online storefronts and ordering flows that turn a product catalog into a ready-to-sell shop." },
+  { title: "Manufacturing", body: "Dashboards and automated workflows that track production and cut manual reporting." },
+  { title: "Research and M&E", body: "Data-collection tools, monitoring frameworks, and reporting for NGO and donor-funded programmes." },
+];
+
+const team = [
+  {
+    name: "Nahashon Kipruto",
+    role: "Co-founder",
+    photo: "/images/team/nahashon-kipruto.jpg",
+    bio: "Co-founded Utility Informatics to help organizations put their data to work. He sets the firm's direction and works with clients to turn their information needs into practical solutions.",
+  },
+  {
+    name: "Vincent Mbogo",
+    role: "Technical Lead",
+    photo: "/images/team/vincent-mbogo.jpg",
+    bio: "Leads the technical work at Utility Informatics, from system design to delivery. He builds the platforms, dashboards, and automations our clients rely on.",
+  },
+].map((m) => ({
+  ...m,
+  hasPhoto: existsSync(new URL(`../../public${m.photo}`, import.meta.url)),
+  initials: m.name.split(" ").map((w) => w[0]).join(""),
+}));
+---
+<BaseLayout title="About" description="The name is the thesis: research produces data, data needs visualization, and raw data becomes useful once you extract insight from it.">
+  <section class="section">
+    <div class="wrap split">
+      <div class="copy">
+        <h1>The name is the thesis.</h1>
+        <p class="lede">
+          Utility Informatics — even the name is about data. Research produces data. Data needs visualization. Raw data on its own isn't useful, so we extract insight from it. That's the whole company, stated once: collect it, understand it, act on it.
+        </p>
+      </div>
+      <img src="/images/data-company.jpg" alt="" loading="eager" />
+    </div>
+  </section>
+
+  <section class="section on-ink">
+    <div class="wrap grid-2">
+      <div>
+        <h2>Mission</h2>
+        <p class="lede">Empower organizations to make faster, evidence-based decisions with tools that are intuitive, scalable, and built to be used, not just delivered.</p>
+      </div>
+      <div>
+        <h2>Vision</h2>
+        <p class="lede">A world where data removes guesswork, not adds to it — where organizations spend less time reconciling numbers and more time acting on what they show.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Industries we serve</h2>
+        <p>What we build depends on the sector. Here is the kind of work we do in each.</p>
+      </div>
+      <div class="grid-3">
+        {industries.map((i) => <WhyUsCard title={i.title} body={i.body} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section on-ink team">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>The team</h2>
+      </div>
+      <div class="grid-2">
+        {team.map((m) => (
+          <article class="person">
+            {m.hasPhoto
+              ? <img src={m.photo} alt={m.name} loading="lazy" />
+              : <div class="ph" role="img" aria-label={`Photo of ${m.name} to come`}>{m.initials}</div>}
+            <div class="pb">
+              <h3>{m.name}</h3>
+              <p class="role">{m.role}</p>
+              <p>{m.bio}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section why">
+    <div class="wrap">
+      <div class="section-head"><h2>Why us</h2></div>
+      <div class="grid-3">
+        <WhyUsCard title="Cross-industry expertise" body="We have delivered data solutions across logistics, healthcare, retail, manufacturing, and research programmes. That range means we rarely meet a data problem for the first time." />
+        <WhyUsCard title="Collaborative approach" body="We work closely with clients and stakeholders to identify needs before we build anything. The solution is tailored to the information your organization actually needs." />
+        <WhyUsCard title="Proven track record" body="We have a history of delivering timely, evidence-based solutions that promote informed decision-making. Our work is built to be used, not just delivered." />
+      </div>
+    </div>
+  </section>
+  <CTABand />
+</BaseLayout>
+<style>
+  .split { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
+  .copy { display: grid; gap: 24px; }
+  .split img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border: 1px solid var(--line); }
+  .person { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; border: 1px solid var(--line-on-ink); padding: 24px; transition: border-color 0.15s; }
+  .person:hover { border-color: var(--gold-bright); }
+  .person img, .ph { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  .ph { display: grid; place-items: center; background: #24232a; border: 1px solid var(--line-on-ink); font-family: var(--serif); font-size: 3.5rem; color: var(--gold); }
+  .pb { display: grid; gap: 12px; }
+  .role { color: var(--gold-bright); font-weight: 500; }
+  @media (max-width: 560px) { .person { grid-template-columns: 1fr; } .person img, .ph { max-width: 240px; } }
+  @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+</style>

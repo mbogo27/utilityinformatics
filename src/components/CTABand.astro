@@ -1,0 +1,15 @@
+---
+interface Props { headline?: string }
+const { headline = "Let's transform your business with data." } = Astro.props;
+---
+<section class="cta on-ink">
+  <div class="wrap inner">
+    <h2>{headline}</h2>
+    <a class="btn" href="/contact">Talk to us</a>
+  </div>
+</section>
+<style>
+  .cta { border-top: 2px solid var(--gold); padding-block: clamp(56px, 8vw, 96px); }
+  .inner { display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+  h2 { max-width: 20ch; }
+</style>

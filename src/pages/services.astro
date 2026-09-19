@@ -1,0 +1,32 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PillarBand from "../components/PillarBand.astro";
+import CTABand from "../components/CTABand.astro";
+import { pillars } from "../lib/site";
+
+const services = (await getCollection("services")).sort((a, b) => a.data.pillarOrder - b.data.pillarOrder);
+---
+<BaseLayout title="Services" description="Seven data services across five stages of the data lifecycle: collection, systems, visualization, workflow and automation, and insights.">
+  <section class="intro section">
+    <div class="wrap">
+      <h1>Services</h1>
+      <p class="lede">Every service sits somewhere on the data lifecycle. Here's where.</p>
+    </div>
+  </section>
+  {pillars.map((p, i) => (
+    <PillarBand
+      id={p.key}
+      n={p.n}
+      title={p.title}
+      intro={p.intro}
+      services={services.filter((s) => s.data.pillar === p.key)}
+      dark={i % 2 === 0}
+    />
+  ))}
+  <CTABand />
+</BaseLayout>
+<style>
+  .intro { padding-bottom: clamp(32px, 5vw, 56px); }
+  .intro .wrap { display: grid; gap: 20px; }
+</style>

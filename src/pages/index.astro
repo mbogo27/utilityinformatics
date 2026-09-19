@@ -1,0 +1,125 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import LifecycleLoop from "../components/LifecycleLoop.astro";
+import PortfolioCard from "../components/PortfolioCard.astro";
+import WhyUsCard from "../components/WhyUsCard.astro";
+import CTABand from "../components/CTABand.astro";
+import { pillars, site } from "../lib/site";
+
+const services = (await getCollection("services")).sort((a, b) => a.data.pillarOrder - b.data.pillarOrder);
+const portfolio = await getCollection("portfolio");
+const images: Record<string, string> = {
+  "Duka Bee": "/images/duka-bee.png",
+  "Jamii Smiles Dental": "/images/jamii-smiles-dental.png",
+};
+const byPillar = (key: string) => services.filter((s) => s.data.pillar === key);
+---
+<BaseLayout title={site.name} description="We provide Data, Analytics, AI, and App Solutions to help organizations modernize their operations and unlock the value of their information.">
+  <section class="hero on-ink">
+    <img class="bg" src="/images/hero-bg.jpg" alt="" aria-hidden="true" />
+    <div class="wrap inner">
+      <div class="copy">
+        <h1>Every service we offer starts with data.</h1>
+        <p class="lede">
+          We partner with organizations to turn raw data into timely, evidence-based decisions — from the moment it's captured to the moment it drives a strategic choice.
+        </p>
+        <div class="actions">
+          <a class="btn" href="/contact">Talk to us</a>
+          <a class="link" href="#lifecycle">See how it works</a>
+        </div>
+      </div>
+      <LifecycleLoop />
+    </div>
+  </section>
+
+  <section id="lifecycle" class="section lifecycle">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>The data lifecycle</h2>
+        <p>Five stages, in order. Every service we offer sits on one of them.</p>
+      </div>
+      <ol>
+        {pillars.map((p) => (
+          <li>
+            <a href={`/services#${p.key}`}>
+              <span class="n">{p.n}</span>
+              <span class="t">{p.title}</span>
+              <span class="d">{p.short}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section preview on-ink">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>What we do at each stage</h2>
+      </div>
+      <ul class="pv">
+        {pillars.map((p) => (
+          <li>
+            <a href={`/services#${p.key}`} class="ptitle">{p.title}</a>
+            <span>{byPillar(p.key).map((s) => s.data.title).join(" · ")}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="more"><a class="link" href="/services">View all services</a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Systems we've built</h2>
+      </div>
+      <div class="grid-2">
+        {portfolio.map((p) => (
+          <PortfolioCard compact name={p.data.name} url={p.data.url} description={p.data.description} image={images[p.data.name] ?? "/images/photo-a.jpg"} />
+        ))}
+      </div>
+      <p class="more"><a class="link" href="/portfolio">See our work</a></p>
+    </div>
+  </section>
+
+  <section class="section why">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Why Utility Informatics</h2>
+      </div>
+      <div class="grid-3">
+        <WhyUsCard title="Cross-industry expertise" body="Experience delivering data solutions across logistics, healthcare, retail, manufacturing, and research programmes." />
+        <WhyUsCard title="Collaborative approach" body="We work closely with clients and stakeholders to identify needs and tailor strategic information solutions." />
+        <WhyUsCard title="Proven track record" body="A history of delivering timely, evidence-based solutions that promote informed decision-making." />
+      </div>
+    </div>
+  </section>
+
+  <CTABand />
+</BaseLayout>
+<style>
+  .hero { position: relative; overflow: hidden; padding-block: clamp(48px, 7vw, 96px); }
+  .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.12; filter: grayscale(1); }
+  .inner { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 5vw, 64px); align-items: center; }
+  .copy { display: grid; gap: 24px; justify-items: start; }
+  .actions { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; margin-top: 8px; }
+  @media (max-width: 900px) { .inner { grid-template-columns: 1fr; } }
+
+  ol { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--gold); display: grid; }
+  ol a { display: grid; grid-template-columns: 56px minmax(0, 260px) 1fr; gap: 16px; align-items: baseline; padding: 20px 0 20px 24px; text-decoration: none; border-bottom: 1px solid var(--line); transition: color 0.15s; }
+  ol li:last-child a { border-bottom: 0; }
+  ol a:hover .t { color: var(--gold); }
+  .n { font-family: var(--serif); font-size: 1.5rem; color: var(--gold); }
+  .t { font-family: var(--serif); font-size: 1.75rem; line-height: 1.1; transition: color 0.15s; }
+  .d { color: var(--stone); }
+  @media (max-width: 760px) { ol a { grid-template-columns: 44px 1fr; } .d { grid-column: 2; } }
+
+  .pv { list-style: none; margin: 0; padding: 0; }
+  .pv li { display: grid; grid-template-columns: 280px 1fr; gap: 24px; padding-block: 18px; border-top: 1px solid var(--line-on-ink); color: var(--stone-on-ink); }
+  .ptitle { font-family: var(--serif); font-size: 1.375rem; color: var(--white); text-decoration: none; transition: color 0.15s; }
+  .ptitle:hover { color: var(--gold-bright); }
+  @media (max-width: 760px) { .pv li { grid-template-columns: 1fr; gap: 4px; } }
+  .more { margin-top: 32px; }
+</style>

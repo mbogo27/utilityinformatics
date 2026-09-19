@@ -1,0 +1,41 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ContactForm from "../components/ContactForm.astro";
+import { site, whatsappUrl } from "../lib/site";
+
+const services = (await getCollection("services"))
+  .sort((a, b) => a.data.pillarOrder - b.data.pillarOrder)
+  .map((s) => s.data.title);
+const c = site.contact;
+---
+<BaseLayout title="Contact" description="Talk to Utility Informatics on WhatsApp, by phone or email, or visit us on Masaba Road, Nairobi.">
+  <section class="section">
+    <div class="wrap layout">
+      <div class="info">
+        <h1>Talk to us</h1>
+        <p class="lede">The fastest way to reach us is WhatsApp.</p>
+        <a class="btn" href={whatsappUrl()} rel="noopener">WhatsApp {c.phone}</a>
+        <dl>
+          <div><dt>Phone</dt><dd><a class="link" href={`tel:+254${c.whatsapp.replace(/^0/, "")}`}>{c.phone}</a></dd></div>
+          <div><dt>Email</dt><dd><a class="link" href={`mailto:${c.email}`}>{c.email}</a></dd></div>
+          <div><dt>Address</dt><dd>{c.address}</dd></div>
+        </dl>
+      </div>
+      <div class="formbox">
+        <h2>Prefer to write?</h2>
+        <ContactForm services={services} />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+<style>
+  .layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(32px, 6vw, 88px); align-items: start; }
+  .info { display: grid; gap: 24px; justify-items: start; }
+  dl { margin: 16px 0 0; display: grid; gap: 20px; }
+  dt { font-size: 0.875rem; color: var(--stone); }
+  dd { margin: 2px 0 0; }
+  .formbox { display: grid; gap: 24px; }
+  .formbox h2 { font-size: 1.75rem; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+</style>

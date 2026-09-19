@@ -1,0 +1,37 @@
+---
+import ServiceCard from "./ServiceCard.astro";
+
+interface Props {
+  id: string;
+  n: string;
+  title: string;
+  intro: string;
+  services: { id: string; data: { title: string; summary: string; howWeDoIt?: { title: string; body: string }[] } }[];
+  dark?: boolean;
+}
+const { id, n, title, intro, services, dark = false } = Astro.props;
+---
+<section id={id} class:list={["band", { "on-ink": dark }]}>
+  <div class="wrap inner">
+    <div class="head">
+      <span class="num">{n}</span>
+      <h2>{title}</h2>
+      <p class="intro">{intro}</p>
+    </div>
+    <div class="cards">
+      {services.map((s) => (
+        <ServiceCard title={s.data.title} summary={s.data.summary} steps={s.data.howWeDoIt} dark={dark} />
+      ))}
+    </div>
+  </div>
+</section>
+<style>
+  .band { padding-block: clamp(56px, 8vw, 96px); scroll-margin-top: 76px; }
+  .inner { display: grid; grid-template-columns: 5fr 7fr; gap: clamp(32px, 6vw, 80px); align-items: start; }
+  .head { display: grid; gap: 16px; }
+  .num { font-family: var(--serif); font-size: 1.5rem; color: var(--gold); border-bottom: 1px solid var(--gold); width: 48px; padding-bottom: 8px; }
+  .intro { color: var(--stone); }
+  .on-ink .intro { color: var(--stone-on-ink); }
+  .cards { display: grid; gap: 20px; }
+  @media (max-width: 860px) { .inner { grid-template-columns: 1fr; } }
+</style>

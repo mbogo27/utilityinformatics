@@ -1,0 +1,34 @@
+---
+import { site, whatsappUrl } from "../lib/site";
+---
+<footer class="site-footer on-ink">
+  <div class="wrap top">
+    <div class="brand">
+      <img src="/images/logo.png" alt={site.name} width="120" height="65" />
+      <p>{site.tagline}.</p>
+    </div>
+    <nav aria-label="Footer">
+      <ul>
+        {site.nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </nav>
+    <address>
+      <a href={whatsappUrl()} rel="noopener">WhatsApp {site.contact.phone}</a>
+      <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+      <span>{site.contact.address}</span>
+    </address>
+  </div>
+  <div class="wrap legal">© {new Date().getFullYear()} {site.name}. All rights reserved.</div>
+</footer>
+<style>
+  .site-footer { border-top: 1px solid var(--gold); padding-top: 56px; }
+  .top { display: grid; grid-template-columns: 1.2fr 1fr 1.4fr; gap: 40px; padding-bottom: 48px; }
+  .brand img { height: 64px; width: auto; margin-bottom: 8px; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  a { text-decoration: none; color: var(--white); transition: color 0.15s; }
+  a:hover { color: var(--gold-bright); }
+  address { font-style: normal; display: grid; gap: 10px; align-content: start; color: var(--stone-on-ink); }
+  address a { color: var(--white); }
+  .legal { border-top: 1px solid var(--line-on-ink); padding-block: 20px; font-size: 0.875rem; color: var(--stone-on-ink); }
+  @media (max-width: 760px) { .top { grid-template-columns: 1fr; } }
+</style>

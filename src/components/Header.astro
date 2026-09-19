@@ -1,0 +1,36 @@
+---
+import { site } from "../lib/site";
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+---
+<header class="site-header">
+  <div class="wrap bar">
+    <a href="/" class="brand" aria-label={`${site.name} home`}>
+      <img src="/images/logo.png" alt={site.name} width="108" height="58" />
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        {site.nav.map((n) => (
+          <li><a href={n.href} aria-current={path === n.href ? "page" : undefined}>{n.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <a class="btn cta" href="/contact">Talk to us</a>
+  </div>
+</header>
+<style>
+  .site-header { background: var(--ink); color: var(--white); border-bottom: 1px solid var(--line-on-ink); position: sticky; top: 0; z-index: 10; }
+  .bar { display: flex; align-items: center; gap: 32px; min-height: 76px; }
+  .brand img { height: 58px; width: auto; }
+  nav { margin-left: auto; }
+  ul { display: flex; gap: 32px; list-style: none; margin: 0; padding: 0; }
+  nav a { text-decoration: none; font-size: 0.9375rem; font-weight: 500; padding-block: 6px; border-bottom: 1px solid transparent; transition: color 0.15s, border-color 0.15s; }
+  nav a:hover { color: var(--gold-bright); }
+  nav a[aria-current="page"] { color: var(--gold-bright); border-bottom-color: var(--gold); }
+  .cta { padding: 12px 18px; font-size: 0.875rem; }
+  @media (max-width: 760px) {
+    .bar { flex-wrap: wrap; gap: 8px 16px; padding-block: 10px; }
+    nav { order: 3; width: 100%; margin: 0; }
+    ul { gap: 20px; }
+    .cta { margin-left: auto; }
+  }
+</style>

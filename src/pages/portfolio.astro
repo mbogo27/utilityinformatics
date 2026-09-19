@@ -1,0 +1,36 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PortfolioCard from "../components/PortfolioCard.astro";
+import CTABand from "../components/CTABand.astro";
+
+const portfolio = await getCollection("portfolio");
+const images: Record<string, string> = {
+  "Duka Bee": "/images/duka-bee.png",
+  "Jamii Smiles Dental": "/images/jamii-smiles-dental.png",
+};
+---
+<BaseLayout title="Portfolio" description="A few of the systems Utility Informatics has built, including Duka Bee and Jamii Smiles Dental.">
+  <section class="section">
+    <div class="wrap stack">
+      <h1>Portfolio</h1>
+      <p class="lede">A few of the systems we've built.</p>
+      <div class="list">
+        {portfolio.map((p) => (
+          <PortfolioCard name={p.data.name} url={p.data.url} description={p.data.description} related={p.data.relatedServices} image={images[p.data.name] ?? "/images/photo-a.jpg"} />
+        ))}
+        <a class="open" href="/contact">
+          <h3>Your project could sit here</h3>
+          <span class="link">Talk to us</span>
+        </a>
+      </div>
+    </div>
+  </section>
+  <CTABand />
+</BaseLayout>
+<style>
+  .stack { display: grid; gap: 20px; }
+  .list { display: grid; gap: 24px; margin-top: 24px; }
+  .open { display: grid; gap: 12px; justify-items: start; padding: 40px 32px; border: 1px dashed var(--stone); text-decoration: none; transition: border-color 0.15s; }
+  .open:hover { border-color: var(--gold); }
+</style>
