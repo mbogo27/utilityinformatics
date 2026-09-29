@@ -6,9 +6,17 @@ interface Props {
   related?: string[];
   image: string;
   compact?: boolean;
+  linkLabel?: string;
 }
-const { name, url, description, related, image, compact = false } = Astro.props;
-const host = new URL(url).host;
+const { name, url, description, related, image, compact = false, linkLabel } = Astro.props;
+let label = linkLabel;
+if (!label) {
+  try {
+    label = new URL(url).host;
+  } catch {
+    label = "View";
+  }
+}
 ---
 <article class:list={["pcard", { compact }]}>
   <div class="shot"><img src={image} alt="" loading="lazy" /></div>
@@ -16,7 +24,7 @@ const host = new URL(url).host;
     <h3>{name}</h3>
     <p>{description}</p>
     {related && related.length > 0 && <p class="rel">Related services: {related.join(", ")}.</p>}
-    <a class="link" href={url} rel="noopener" target="_blank">{host}</a>
+    <a class="link" href={url} rel="noopener" target="_blank">{label}</a>
   </div>
 </article>
 <style>

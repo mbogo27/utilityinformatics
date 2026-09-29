@@ -21,6 +21,9 @@ const byPillar = (key: string) => services.filter((s) => s.data.pillar === key);
     <div class="wrap inner">
       <div class="copy">
         <h1>Every service we offer starts with data.</h1>
+        <p class="sub">
+          We're a global data and evidence advisory, working with governments, philanthropies, and non-profits to improve lives at scale, using technology and AI where they can deliver the most impact.
+        </p>
         <p class="lede">
           We partner with organizations to turn raw data into timely, evidence-based decisions — from the moment it's captured to the moment it drives a strategic choice.
         </p>
@@ -104,6 +107,7 @@ const byPillar = (key: string) => services.filter((s) => s.data.pillar === key);
   .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.12; filter: grayscale(1); }
   .inner { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 5vw, 64px); align-items: center; }
   .copy { display: grid; gap: 24px; justify-items: start; }
+  .sub { color: var(--white); font-size: 1.1875rem; font-weight: 500; max-width: 52ch; }
   .actions { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; margin-top: 8px; }
   @media (max-width: 900px) { .inner { grid-template-columns: 1fr; } }
 

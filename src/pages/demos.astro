@@ -1,0 +1,48 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PortfolioCard from "../components/PortfolioCard.astro";
+import CTABand from "../components/CTABand.astro";
+
+const demos = [
+  {
+    name: "Whole-School Results Dashboard",
+    url: "/demos/whole-school-results-dashboard/",
+    description:
+      "An interactive results dashboard for a school — built to turn raw exam data into something a head teacher or board can actually read at a glance: trends across exams, subjects, and classes, filterable in real time.",
+    related: ["Business Intelligence, Reporting & Visualization Platforms"],
+    image: "/images/demos/whole-school-results-dashboard.png",
+  },
+  {
+    name: "Nyeri Fuel Outlets Dashboard",
+    url: "/demos/nyeri-fuel-outlets-dashboard/",
+    description:
+      "A sales, pricing, and supply dashboard for fuel stations across Nyeri — built to make outlet-level sales, pump prices, and reorder status explorable instead of buried in a spreadsheet.",
+    related: ["Business Intelligence, Reporting & Visualization Platforms", "Research, Monitoring & Evaluation"],
+    image: "/images/demos/nyeri-fuel-outlets-dashboard.png",
+  },
+];
+---
+<BaseLayout title="Demos" description="Interactive dashboards Utility Informatics has built to show what the Visualization and Insights stages of the data lifecycle actually produce.">
+  <section class="section">
+    <div class="wrap stack">
+      <h1>Demos</h1>
+      <p class="lede">A few interactive tools we've built to show what's possible. Not tied to a client — but built the same way we'd build one for you.</p>
+      <div class="list">
+        {demos.map((d) => (
+          <PortfolioCard name={d.name} url={d.url} description={d.description} related={d.related} image={d.image} linkLabel="Launch demo" />
+        ))}
+        <a class="open" href="/contact">
+          <h3>Have data you'd want visualized like this?</h3>
+          <span class="link">Talk to us</span>
+        </a>
+      </div>
+    </div>
+  </section>
+  <CTABand />
+</BaseLayout>
+<style>
+  .stack { display: grid; gap: 20px; }
+  .list { display: grid; gap: 24px; margin-top: 24px; }
+  .open { display: grid; gap: 12px; justify-items: start; padding: 40px 32px; border: 1px dashed var(--stone); text-decoration: none; transition: border-color 0.15s; }
+  .open:hover { border-color: var(--gold); }
+</style>
