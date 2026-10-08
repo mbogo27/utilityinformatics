@@ -7,8 +7,7 @@ export const site = {
   contact: {
     phone: "0720 325 755",
     whatsapp: "0720325755",
-    email: "utiltyinfogrp@gmail.com",
-    address: "Masaba Road, Ground Floor, Room/Door 5, Nairobi",
+    email: "info@utilityinformatics.co.ke",
   },
   nav: [
     { label: "Services", href: "/services" },
@@ -17,7 +16,9 @@ export const site = {
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
   ],
-  social: {},
+  social: {
+    facebook: "https://www.facebook.com/utilityinformaticske",
+  },
 };
 
 export const whatsappUrl = (text = "Hello Utility Informatics") =>

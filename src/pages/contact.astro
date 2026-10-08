@@ -1,31 +1,54 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ContactForm from "../components/ContactForm.astro";
 import CTABand from "../components/CTABand.astro";
 import { site, whatsappUrl } from "../lib/site";
 
+const services = (await getCollection("services"))
+  .sort((a, b) => a.data.pillarOrder - b.data.pillarOrder)
+  .map((s) => s.data.title);
 const c = site.contact;
 ---
-<BaseLayout title="Contact" description="Talk to Utility Informatics on WhatsApp, by phone or email, or visit us on Masaba Road, Nairobi.">
+<BaseLayout title="Contact" description="Talk to Utility Informatics on WhatsApp, by email, or follow us on Facebook.">
   <section class="section">
-    <div class="wrap narrow">
+    <div class="wrap layout">
       <div class="info">
         <h1>Talk to us</h1>
         <p class="lede">The fastest way to reach us is WhatsApp.</p>
-        <a class="btn" href={whatsappUrl()} rel="noopener">WhatsApp {c.phone}</a>
+        <a class="btn" href={whatsappUrl()} rel="noopener">Chat on WhatsApp</a>
         <dl>
-          <div><dt>Phone</dt><dd><a class="link" href={`tel:+254${c.whatsapp.replace(/^0/, "")}`}>{c.phone}</a></dd></div>
           <div><dt>Email</dt><dd><a class="link" href={`mailto:${c.email}`}>{c.email}</a></dd></div>
-          <div><dt>Address</dt><dd>{c.address}</dd></div>
+          <div>
+            <dt>Follow us</dt>
+            <dd>
+              <a class="social" href={site.social.facebook} rel="noopener" target="_blank">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                  <path d="M22 12.06C22 6.48 17.52 2 11.94 2S2 6.48 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.84c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22c4.78-.76 8.44-4.92 8.44-9.94z"/>
+                </svg>
+                Follow us on Facebook
+              </a>
+            </dd>
+          </div>
         </dl>
+      </div>
+      <div class="formbox">
+        <h2>Prefer to write?</h2>
+        <ContactForm services={services} />
       </div>
     </div>
   </section>
   <CTABand />
 </BaseLayout>
 <style>
-  .narrow { max-width: 560px; margin-inline: auto; }
-  .info { display: grid; gap: 28px; justify-items: start; }
-  dl { margin: 8px 0 0; display: grid; gap: 24px; width: 100%; }
+  .layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(32px, 6vw, 88px); align-items: start; }
+  .info { display: grid; gap: 24px; justify-items: start; }
+  dl { margin: 16px 0 0; display: grid; gap: 20px; }
   dt { font-size: 0.875rem; color: var(--stone); }
   dd { margin: 2px 0 0; }
+  .social { display: inline-flex; align-items: center; gap: 8px; color: inherit; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 4px; text-decoration-thickness: 1px; transition: color 0.15s; }
+  .social:hover { color: var(--gold); }
+  .formbox { display: grid; gap: 24px; }
+  .formbox h2 { font-size: 1.75rem; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
 </style>
